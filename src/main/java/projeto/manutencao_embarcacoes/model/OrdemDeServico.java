@@ -30,6 +30,10 @@ public class OrdemDeServico implements Serializable {
 	@JoinColumn
 	private Embarcacao embarcacao;
 
+	@ManyToOne
+	@JoinColumn
+	private Servico servico;
+
 	public Long getId() {
 		return id;
 	}
@@ -60,6 +64,14 @@ public class OrdemDeServico implements Serializable {
 
 	public void setEmbarcacao(Embarcacao embarcacao) {
 		this.embarcacao = embarcacao;
+	}
+
+	public Servico getServico() {
+		return servico;
+	}
+
+	public void setServico(Servico servico) {
+		this.servico = servico;
 	}
 
 }
