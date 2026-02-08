@@ -1,12 +1,19 @@
 package projeto.manutencao_embarcacoes.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -33,6 +40,10 @@ public class Funcionario implements Serializable {
 
 	@Column(nullable = false, unique = true)
 	private String numeroContato;
+
+	@JsonProperty(access = Access.WRITE_ONLY)
+	@OneToMany(mappedBy = "funcionario", fetch = FetchType.LAZY)
+	private Set<OrdemDeServico> ordensDeServico = new HashSet<>();
 
 	public Long getId() {
 		return id;
@@ -80,6 +91,14 @@ public class Funcionario implements Serializable {
 
 	public void setNumeroContato(String numeroContato) {
 		this.numeroContato = numeroContato;
+	}
+
+	public Set<OrdemDeServico> getOrdensDeServico() {
+		return ordensDeServico;
+	}
+
+	public void setOrdensDeServico(Set<OrdemDeServico> ordensDeServico) {
+		this.ordensDeServico = ordensDeServico;
 	}
 
 }
