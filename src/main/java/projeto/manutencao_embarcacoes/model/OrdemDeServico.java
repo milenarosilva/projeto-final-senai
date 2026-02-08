@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -23,6 +25,10 @@ public class OrdemDeServico implements Serializable {
 	private double preco;
 
 	private String observacoes;
+
+	@ManyToOne
+	@JoinColumn
+	private Embarcacao embarcacao;
 
 	public Long getId() {
 		return id;
@@ -46,6 +52,14 @@ public class OrdemDeServico implements Serializable {
 
 	public void setObservacoes(String observacoes) {
 		this.observacoes = observacoes;
+	}
+
+	public Embarcacao getEmbarcacao() {
+		return embarcacao;
+	}
+
+	public void setEmbarcacao(Embarcacao embarcacao) {
+		this.embarcacao = embarcacao;
 	}
 
 }
