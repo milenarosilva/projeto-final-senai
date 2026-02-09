@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import projeto.manutencao_embarcacoes.dto.ServicoRecordDto;
+import projeto.manutencao_embarcacoes.dto.ServicoDto;
 import projeto.manutencao_embarcacoes.model.Servico;
 import projeto.manutencao_embarcacoes.service.ServicoService;
 
@@ -25,7 +25,7 @@ public class ServicoController {
 	}
 
 	@PostMapping("/criar")
-	public ResponseEntity<Servico> salvar(@RequestBody ServicoRecordDto servico) {
+	public ResponseEntity<Servico> salvar(@RequestBody ServicoDto servico) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(servicoService.salvar(servico));
 	}
 

@@ -1,6 +1,6 @@
 package projeto.manutencao_embarcacoes.dto;
 
-public record OrdemDeServicoRecordDto(
+public record OrdemDeServicoDto(
 		Long embarcacaoId,
 		Long funcionarioId,
 		Long servicoId,

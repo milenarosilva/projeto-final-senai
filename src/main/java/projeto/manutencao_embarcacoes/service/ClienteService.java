@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import projeto.manutencao_embarcacoes.dto.ClienteRecordDto;
+import projeto.manutencao_embarcacoes.dto.ClienteDto;
 import projeto.manutencao_embarcacoes.model.Cliente;
 import projeto.manutencao_embarcacoes.repository.ClienteRepository;
 
@@ -19,11 +19,11 @@ public class ClienteService {
 	}
 
 	@Transactional
-	public Cliente salvar(ClienteRecordDto clienteRecordDto) {
+	public Cliente salvar(ClienteDto clienteDto) {
 		Cliente cliente = new Cliente();
-		cliente.setRazaoSocial(clienteRecordDto.razaoSocial());
-		cliente.setCnpj(clienteRecordDto.cnpj());
-		cliente.setNumeroContato(clienteRecordDto.numeroContato());
+		cliente.setRazaoSocial(clienteDto.razaoSocial());
+		cliente.setCnpj(clienteDto.cnpj());
+		cliente.setNumeroContato(clienteDto.numeroContato());
 
 		return clienteRepository.save(cliente);
 	}

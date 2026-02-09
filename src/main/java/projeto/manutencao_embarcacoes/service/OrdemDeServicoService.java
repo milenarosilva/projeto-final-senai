@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import projeto.manutencao_embarcacoes.dto.OrdemDeServicoRecordDto;
+import projeto.manutencao_embarcacoes.dto.OrdemDeServicoDto;
 import projeto.manutencao_embarcacoes.model.OrdemDeServico;
 import projeto.manutencao_embarcacoes.repository.EmbarcacaoRepository;
 import projeto.manutencao_embarcacoes.repository.FuncionarioRepository;
@@ -30,19 +30,19 @@ public class OrdemDeServicoService {
 	}
 
 	@Transactional
-	public OrdemDeServico salvar(OrdemDeServicoRecordDto ordemDeServicoRecordDto) {
+	public OrdemDeServico salvar(OrdemDeServicoDto ordemDeServicoDto) {
 		OrdemDeServico ordemDeServico = new OrdemDeServico();
-		ordemDeServico.setObservacoes(ordemDeServicoRecordDto.observacoes());
-		ordemDeServico.setServico(servicoRepository.findById(ordemDeServicoRecordDto.servicoId()).get());
-		ordemDeServico.setEmbarcacao(embarcacaoRepository.findById(ordemDeServicoRecordDto.embarcacaoId()).get());
-		ordemDeServico.setFuncionario(funcionarioRepository.findById(ordemDeServicoRecordDto.funcionarioId()).get());
+		ordemDeServico.setObservacoes(ordemDeServicoDto.observacoes());
+		ordemDeServico.setServico(servicoRepository.findById(ordemDeServicoDto.servicoId()).get());
+		ordemDeServico.setEmbarcacao(embarcacaoRepository.findById(ordemDeServicoDto.embarcacaoId()).get());
+		ordemDeServico.setFuncionario(funcionarioRepository.findById(ordemDeServicoDto.funcionarioId()).get());
 
 		// Cálculo exemplo de valor completo do serviço
 		// double preco =
-		// (embarcacaoRepository.findById(ordemDeServicoRecordDto.servicoId()).get().getComprimento()
+		// (embarcacaoRepository.findById(ordemDeServicoDto.servicoId()).get().getComprimento()
 		// * 1.75)
 		// *
-		// servicoRepository.findById(ordemDeServicoRecordDto.servicoId()).get().getValorBase();
+		// servicoRepository.findById(ordemDeServicoDto.servicoId()).get().getValorBase();
 		//
 		// ordemDeServico.setPreco(preco);
 

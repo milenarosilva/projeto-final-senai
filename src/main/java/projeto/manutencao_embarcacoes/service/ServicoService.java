@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import projeto.manutencao_embarcacoes.dto.ServicoRecordDto;
+import projeto.manutencao_embarcacoes.dto.ServicoDto;
 import projeto.manutencao_embarcacoes.model.Servico;
 import projeto.manutencao_embarcacoes.repository.ServicoRepository;
 
@@ -19,12 +19,12 @@ public class ServicoService {
 	}
 
 	@Transactional
-	public Servico salvar(ServicoRecordDto servicoRecordDto) {
+	public Servico salvar(ServicoDto servicoDto) {
 		Servico servico = new Servico();
-		servico.setNome(servicoRecordDto.nome());
-		servico.setDescricao(servicoRecordDto.descricao());
-		servico.setValorBase(servicoRecordDto.valorBase());
-		servico.setEspecializado(servicoRecordDto.isEspecializado());
+		servico.setNome(servicoDto.nome());
+		servico.setDescricao(servicoDto.descricao());
+		servico.setValorBase(servicoDto.valorBase());
+		servico.setEspecializado(servicoDto.isEspecializado());
 
 		return servicoRepository.save(servico);
 	}

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import projeto.manutencao_embarcacoes.dto.ClienteRecordDto;
+import projeto.manutencao_embarcacoes.dto.ClienteDto;
 import projeto.manutencao_embarcacoes.model.Cliente;
 import projeto.manutencao_embarcacoes.service.ClienteService;
 
@@ -26,7 +26,7 @@ public class ClienteController {
 	}
 
 	@PostMapping("/criar")
-	public ResponseEntity<Cliente> salvar(@RequestBody ClienteRecordDto cliente) {
+	public ResponseEntity<Cliente> salvar(@RequestBody ClienteDto cliente) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.salvar(cliente));
 	}
 

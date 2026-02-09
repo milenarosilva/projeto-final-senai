@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import projeto.manutencao_embarcacoes.dto.EmbarcacaoRecordDto;
+import projeto.manutencao_embarcacoes.dto.EmbarcacaoDto;
 import projeto.manutencao_embarcacoes.model.Embarcacao;
 import projeto.manutencao_embarcacoes.repository.ClienteRepository;
 import projeto.manutencao_embarcacoes.repository.EmbarcacaoRepository;
@@ -22,13 +22,13 @@ public class EmbarcacaoService {
 	}
 
 	@Transactional
-	public Embarcacao salvar(EmbarcacaoRecordDto embarcacaoRecordDto) {
+	public Embarcacao salvar(EmbarcacaoDto embarcacaoDto) {
 		Embarcacao embarcacao = new Embarcacao();
-		embarcacao.setNome(embarcacaoRecordDto.nome());
-		embarcacao.setTipo(embarcacaoRecordDto.tipo());
-		embarcacao.setComprimento(embarcacaoRecordDto.comprimento());
-		embarcacao.setObservacoes(embarcacaoRecordDto.observacoes());
-		embarcacao.setCliente(clienteRepository.findById(embarcacaoRecordDto.clienteId()).get());
+		embarcacao.setNome(embarcacaoDto.nome());
+		embarcacao.setTipo(embarcacaoDto.tipo());
+		embarcacao.setComprimento(embarcacaoDto.comprimento());
+		embarcacao.setObservacoes(embarcacaoDto.observacoes());
+		embarcacao.setCliente(clienteRepository.findById(embarcacaoDto.clienteId()).get());
 
 		return embarcacaoRepository.save(embarcacao);
 	}

@@ -1,6 +1,6 @@
 package projeto.manutencao_embarcacoes.dto;
 
-public record ClienteRecordDto(
+public record ClienteDto(
 		String razaoSocial,
 		String cnpj,
 		String numeroContato) {

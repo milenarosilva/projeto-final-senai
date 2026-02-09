@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import projeto.manutencao_embarcacoes.dto.FuncionarioRecordDto;
+import projeto.manutencao_embarcacoes.dto.FuncionarioDto;
 import projeto.manutencao_embarcacoes.model.Funcionario;
 import projeto.manutencao_embarcacoes.repository.FuncionarioRepository;
 
@@ -19,13 +19,13 @@ public class FuncionarioService {
 	}
 
 	@Transactional
-	public Funcionario salvar(FuncionarioRecordDto funcionarioRecordDto) {
+	public Funcionario salvar(FuncionarioDto funcionarioDto) {
 		Funcionario funcionario = new Funcionario();
-		funcionario.setNome(funcionarioRecordDto.nome());
-		funcionario.setSobrenome(funcionarioRecordDto.sobrenome());
-		funcionario.setCpf(funcionarioRecordDto.cpf());
-		funcionario.setFuncao(funcionarioRecordDto.funcao());
-		funcionario.setNumeroContato(funcionarioRecordDto.numeroContato());
+		funcionario.setNome(funcionarioDto.nome());
+		funcionario.setSobrenome(funcionarioDto.sobrenome());
+		funcionario.setCpf(funcionarioDto.cpf());
+		funcionario.setFuncao(funcionarioDto.funcao());
+		funcionario.setNumeroContato(funcionarioDto.numeroContato());
 
 		return funcionarioRepository.save(funcionario);
 	}

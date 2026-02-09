@@ -1,6 +1,6 @@
 package projeto.manutencao_embarcacoes.dto;
 
-public record FuncionarioRecordDto(
+public record FuncionarioDto(
 		String nome,
 		String sobrenome,
 		String cpf,

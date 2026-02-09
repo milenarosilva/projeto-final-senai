@@ -1,6 +1,6 @@
 package projeto.manutencao_embarcacoes.dto;
 
-public record ServicoRecordDto(
+public record ServicoDto(
 		String nome,
 		String descricao,
 		double valorBase,
