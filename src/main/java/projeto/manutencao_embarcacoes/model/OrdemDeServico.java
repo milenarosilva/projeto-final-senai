@@ -21,7 +21,7 @@ public class OrdemDeServico implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	// @Column(nullable = false)
 	private double preco;
 
 	private String observacoes;
