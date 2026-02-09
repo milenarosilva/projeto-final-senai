@@ -26,8 +26,8 @@ public class Cliente implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
-	private String nome;
+	@Column(nullable = false, unique = true)
+	private String razaoSocial;
 
 	@Column(nullable = false, unique = true)
 	private String cnpj;
@@ -47,12 +47,12 @@ public class Cliente implements Serializable {
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getRazaoSocial() {
+		return razaoSocial;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setRazaoSocial(String razaoSocial) {
+		this.razaoSocial = razaoSocial;
 	}
 
 	public String getCnpj() {

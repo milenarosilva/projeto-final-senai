@@ -31,8 +31,8 @@ public class ClienteController {
 	}
 
 	@GetMapping
-	public List<Cliente> listar(@RequestParam(required = false) String nome) {
-		return clienteService.listar(nome);
+	public List<Cliente> listar(@RequestParam(required = false) String razaoSocial) {
+		return clienteService.listar(razaoSocial);
 	}
 
 }

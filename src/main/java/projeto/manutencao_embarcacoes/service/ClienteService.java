@@ -21,16 +21,16 @@ public class ClienteService {
 	@Transactional
 	public Cliente salvar(ClienteRecordDto clienteRecordDto) {
 		Cliente cliente = new Cliente();
-		cliente.setNome(clienteRecordDto.nome());
+		cliente.setRazaoSocial(clienteRecordDto.razaoSocial());
 		cliente.setCnpj(clienteRecordDto.cnpj());
 		cliente.setNumeroContato(clienteRecordDto.numeroContato());
 
 		return clienteRepository.save(cliente);
 	}
 
-	public List<Cliente> listar(String nome) {
-		if (nome != null) {
-			return clienteRepository.findByNomeContainingIgnoreCase(nome);
+	public List<Cliente> listar(String razaoSocial) {
+		if (razaoSocial != null) {
+			return clienteRepository.findByRazaoSocialContainingIgnoreCase(razaoSocial);
 		}
 		return clienteRepository.findAll();
 	}
