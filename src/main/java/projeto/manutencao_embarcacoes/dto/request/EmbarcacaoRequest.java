@@ -1,6 +1,6 @@
-package projeto.manutencao_embarcacoes.dto;
+package projeto.manutencao_embarcacoes.dto.request;
 
-public record EmbarcacaoDto(
+public record EmbarcacaoRequest(
 		String nome,
 		double comprimento,
 		String tipo,

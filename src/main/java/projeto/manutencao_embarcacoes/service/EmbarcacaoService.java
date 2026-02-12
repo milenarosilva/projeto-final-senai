@@ -1,14 +1,18 @@
 package projeto.manutencao_embarcacoes.service;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
-import projeto.manutencao_embarcacoes.dto.EmbarcacaoDto;
+import projeto.manutencao_embarcacoes.dto.request.EmbarcacaoRequest;
+import projeto.manutencao_embarcacoes.dto.response.EmbarcacaoResponse;
 import projeto.manutencao_embarcacoes.model.Embarcacao;
 import projeto.manutencao_embarcacoes.repository.ClienteRepository;
 import projeto.manutencao_embarcacoes.repository.EmbarcacaoRepository;
+import projeto.manutencao_embarcacoes.util.FormatoUtils;
 
 @Service
 public class EmbarcacaoService {
@@ -22,22 +26,49 @@ public class EmbarcacaoService {
 	}
 
 	@Transactional
-	public Embarcacao salvar(EmbarcacaoDto embarcacaoDto) {
-		Embarcacao embarcacao = new Embarcacao();
-		embarcacao.setNome(embarcacaoDto.nome());
-		embarcacao.setTipo(embarcacaoDto.tipo());
-		embarcacao.setComprimento(embarcacaoDto.comprimento());
-		embarcacao.setObservacoes(embarcacaoDto.observacoes());
-		embarcacao.setCliente(clienteRepository.findById(embarcacaoDto.clienteId()).get());
+	public EmbarcacaoResponse salvar(EmbarcacaoRequest embarcacaoRequest) {
 
-		return embarcacaoRepository.save(embarcacao);
+		// Validação
+		String nome = embarcacaoRequest.nome().trim().toUpperCase();
+		String tipo = embarcacaoRequest.tipo().trim().toUpperCase();
+		String observacoes = embarcacaoRequest.observacoes().trim();
+		double comprimento = embarcacaoRequest.comprimento();
+		long proprietario = embarcacaoRequest.clienteId();
+
+		if (Stream.of(nome, tipo)
+				.anyMatch(str -> str == null || str.isBlank()) ||
+				Stream.of(comprimento, proprietario)
+						.anyMatch(num -> num == null))
+			throw new IllegalArgumentException("Campos obrigatórios precisam ser preenchidos!");
+
+		FormatoUtils.validarTamanho(comprimento);
+
+		if (comprimento < 2)// Não trabalhamos com botes kkk
+			throw new IllegalArgumentException("Embarcação muito pequena para ser cadastrada.");
+
+		if (!clienteRepository.existsById(proprietario))
+			throw new IllegalArgumentException("Não existe Cliente com o ID informado!");
+
+		// *Cliente* não pode ter duas embarcações com o mesmo nome
+		if (embarcacaoRepository.existsByNomeIgnoreCase(nome)) {
+			if (embarcacaoRepository.findAllByClienteId(proprietario).size() != 0)
+				throw new EntityExistsException("Cliente já possui embarcação cadastrada com esse Nome!");
+		}
+
+		Embarcacao embarcacao = new Embarcacao();
+		embarcacao.setNome(nome);
+		embarcacao.setTipo(tipo);
+		embarcacao.setObservacoes(observacoes);
+		embarcacao.setComprimento(comprimento);
+		embarcacao.setCliente(clienteRepository.findById(proprietario).get());
+		Embarcacao embarcacaoSalva = embarcacaoRepository.save(embarcacao);
+
+		return EmbarcacaoResponse.fromEntity(embarcacaoSalva);
 	}
 
-	public List<Embarcacao> listar(String nome) {
-		if (nome != null) {
-			return embarcacaoRepository.findByNomeContainingIgnoreCase(nome);
-		}
-		return embarcacaoRepository.findAll();
+	public List<EmbarcacaoResponse> listar() {
+		return embarcacaoRepository.findAll().stream()
+				.map(EmbarcacaoResponse::fromEntity).toList();
 	}
 
 }

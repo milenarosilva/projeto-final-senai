@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import projeto.manutencao_embarcacoes.dto.EmbarcacaoDto;
-import projeto.manutencao_embarcacoes.model.Embarcacao;
+import projeto.manutencao_embarcacoes.dto.request.EmbarcacaoRequest;
+import projeto.manutencao_embarcacoes.dto.response.EmbarcacaoResponse;
 import projeto.manutencao_embarcacoes.service.EmbarcacaoService;
 
 @RestController
@@ -26,13 +25,14 @@ public class EmbarcacaoController {
 	}
 
 	@PostMapping("/criar")
-	public ResponseEntity<Embarcacao> salvar(@RequestBody EmbarcacaoDto embarcacao) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(embarcacaoService.salvar(embarcacao));
+	public ResponseEntity<EmbarcacaoResponse> salvar(@RequestBody EmbarcacaoRequest embarcacaoRequest) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(embarcacaoService.salvar(embarcacaoRequest));
 	}
 
 	@GetMapping
-	public List<Embarcacao> listar(@RequestParam(required = false) String nome) {
-		return embarcacaoService.listar(nome);
+	public ResponseEntity<List<EmbarcacaoResponse>> listar() {
+		List<EmbarcacaoResponse> embarcacaoResponse = embarcacaoService.listar();
+		return ResponseEntity.ok(embarcacaoResponse);
 	}
 
 }

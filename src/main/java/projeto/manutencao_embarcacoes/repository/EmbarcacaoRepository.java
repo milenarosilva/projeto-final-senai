@@ -8,6 +8,10 @@ import projeto.manutencao_embarcacoes.model.Embarcacao;
 
 public interface EmbarcacaoRepository extends JpaRepository<Embarcacao, Long> {
 
+	boolean existsByNomeIgnoreCase(String nome);
+
+	List<Embarcacao> findAllByClienteId(Long id);
+
 	List<Embarcacao> findByNomeContainingIgnoreCase(String nome);
 
 }
