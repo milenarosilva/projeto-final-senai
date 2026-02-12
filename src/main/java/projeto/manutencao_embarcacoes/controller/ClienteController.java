@@ -4,15 +4,15 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import projeto.manutencao_embarcacoes.dto.ClienteDto;
-import projeto.manutencao_embarcacoes.model.Cliente;
+import projeto.manutencao_embarcacoes.dto.request.ClienteRequest;
+import projeto.manutencao_embarcacoes.dto.response.ClienteResponse;
 import projeto.manutencao_embarcacoes.service.ClienteService;
 
 @RestController
@@ -26,13 +26,15 @@ public class ClienteController {
 	}
 
 	@PostMapping("/criar")
-	public ResponseEntity<Cliente> salvar(@RequestBody ClienteDto cliente) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.salvar(cliente));
+	public ResponseEntity<ClienteResponse> criar(@RequestBody @Validated ClienteRequest clienteRequest) {
+		ClienteResponse clienteResponse = clienteService.salvar(clienteRequest);
+		return ResponseEntity.status(HttpStatus.CREATED).body(clienteResponse);
 	}
 
 	@GetMapping
-	public List<Cliente> listar(@RequestParam(required = false) String razaoSocial) {
-		return clienteService.listar(razaoSocial);
+	public ResponseEntity<List<ClienteResponse>> listar() {
+		List<ClienteResponse> clienteResponse = clienteService.listar();
+		return ResponseEntity.ok(clienteResponse);
 	}
 
 }

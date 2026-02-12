@@ -29,7 +29,7 @@ public class Cliente implements Serializable {
 	@Column(nullable = false, unique = true)
 	private String razaoSocial;
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false, unique = true, length = 14)
 	private String cnpj;
 
 	@Column(nullable = false, unique = true)
