@@ -28,7 +28,7 @@ public class Embarcacao implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(unique = true, nullable = false)
+	@Column(nullable = false)
 	private String nome;
 
 	@Column(nullable = false)
@@ -40,7 +40,7 @@ public class Embarcacao implements Serializable {
 	private String observacoes;
 
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(nullable = false)
 	private Cliente cliente;
 
 	@JsonProperty(access = Access.WRITE_ONLY)
