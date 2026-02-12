@@ -29,30 +29,30 @@ public class ClienteService {
 	public ClienteResponse salvar(ClienteRequest clienteRequest) {
 
 		// Validação
-		String digitosCnpj = FormatoUtils.isolarNumeros(clienteRequest.cnpj());
-		String razaoSocialFormatada = clienteRequest.razaoSocial().trim().toUpperCase();
-		String digitosNumeroContato = FormatoUtils.isolarNumeros(clienteRequest.numeroContato());
+		String cnpj = FormatoUtils.isolarNumeros(clienteRequest.cnpj());
+		String razaoSocial = clienteRequest.razaoSocial().trim().toUpperCase();
+		String numeroContato = FormatoUtils.isolarNumeros(clienteRequest.numeroContato());
 
-		if (Stream.of(digitosCnpj, razaoSocialFormatada, digitosNumeroContato)
+		if (Stream.of(cnpj, razaoSocial, numeroContato)
 				.anyMatch(str -> str == null || str.isBlank()))
 			throw new IllegalArgumentException("Campos obrigatórios precisam ser preenchidos!");
 
-		FormatoUtils.validarDocumentoCnpj(digitosCnpj);
-		FormatoUtils.validarNumeroContato(digitosNumeroContato);
+		FormatoUtils.validarDocumentoCnpj(cnpj);
+		FormatoUtils.validarNumeroContato(numeroContato);
 
-		if (clienteRepository.existsByCnpj(digitosCnpj))
+		if (clienteRepository.existsByCnpj(cnpj))
 			throw new EntityExistsException("Já existe um cliente cadastrado com esse CNPJ!");
 
-		if (clienteRepository.existsByNumeroContato(digitosNumeroContato))
+		if (clienteRepository.existsByNumeroContato(numeroContato))
 			throw new EntityExistsException("Já existe um cliente cadastrado com esse Número de Contato!");
 
-		if (clienteRepository.existsByRazaoSocialIgnoreCase(razaoSocialFormatada))
+		if (clienteRepository.existsByRazaoSocialIgnoreCase(razaoSocial))
 			throw new EntityExistsException("Já existe um cliente cadastrado com essa Razão Social!");
 
 		Cliente cliente = new Cliente();
-		cliente.setCnpj(digitosCnpj);
-		cliente.setNumeroContato(digitosNumeroContato);
-		cliente.setRazaoSocial(razaoSocialFormatada);
+		cliente.setCnpj(cnpj);
+		cliente.setNumeroContato(numeroContato);
+		cliente.setRazaoSocial(razaoSocial);
 		Cliente clienteSalvo = clienteRepository.save(cliente);
 
 		return ClienteResponse.fromEntity(clienteSalvo);
