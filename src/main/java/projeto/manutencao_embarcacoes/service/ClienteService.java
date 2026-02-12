@@ -11,15 +11,18 @@ import projeto.manutencao_embarcacoes.dto.request.ClienteRequest;
 import projeto.manutencao_embarcacoes.dto.response.ClienteResponse;
 import projeto.manutencao_embarcacoes.model.Cliente;
 import projeto.manutencao_embarcacoes.repository.ClienteRepository;
+import projeto.manutencao_embarcacoes.repository.EmbarcacaoRepository;
 import projeto.manutencao_embarcacoes.util.FormatoUtils;
 
 @Service
 public class ClienteService {
 
 	private final ClienteRepository clienteRepository;
+	private final EmbarcacaoRepository embarcacaoRepository;
 
-	public ClienteService(ClienteRepository clienteRepository) {
+	public ClienteService(ClienteRepository clienteRepository, EmbarcacaoRepository embarcacaoRepository) {
 		this.clienteRepository = clienteRepository;
+		this.embarcacaoRepository = embarcacaoRepository;
 	}
 
 	@Transactional
@@ -58,6 +61,17 @@ public class ClienteService {
 	public List<ClienteResponse> listar() {
 		return clienteRepository.findAll().stream()
 				.map(ClienteResponse::fromEntity).toList();
+	}
+
+	public void excluir(Long id) {
+		if (!clienteRepository.existsById(id)) {
+			throw new RuntimeException("Não foi possível excluir Cliente com ID não encontrado!");
+		} else {
+			if (embarcacaoRepository.findAllByClienteId(id).size() != 0)
+				throw new RuntimeException("Não é possível excluir Cliente com embarcações cadastradas!");
+		}
+
+		clienteRepository.deleteById(id);
 	}
 
 }
