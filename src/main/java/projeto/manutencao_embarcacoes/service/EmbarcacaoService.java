@@ -71,4 +71,11 @@ public class EmbarcacaoService {
 				.map(EmbarcacaoResponse::fromEntity).toList();
 	}
 
+	public void excluir(Long id) {
+		if (!embarcacaoRepository.existsById(id))
+			throw new RuntimeException("Não foi possível excluir Embarcação com ID não encontrado");
+
+		embarcacaoRepository.deleteById(id);
+	}
+
 }
