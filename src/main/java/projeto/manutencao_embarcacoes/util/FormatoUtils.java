@@ -87,4 +87,9 @@ public final class FormatoUtils {
 			throw new IllegalArgumentException("Campo espera formato DDD+número!");
 	}
 
+	public static void validarTamanho(double tamanho) {
+		if (tamanho < 0)
+			throw new IllegalArgumentException("Campo espera receber tamanho e não pode ser negativo!");
+	}
+
 }
