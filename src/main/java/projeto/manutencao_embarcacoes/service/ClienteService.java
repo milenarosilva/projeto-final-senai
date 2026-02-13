@@ -1,6 +1,7 @@
 package projeto.manutencao_embarcacoes.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -58,6 +59,50 @@ public class ClienteService {
 		clienteExistente.setRazaoSocial(clienteRequest.razaoSocial());
 		clienteExistente.setCnpj(clienteRequest.cnpj());
 		clienteExistente.setNumeroContato(clienteRequest.numeroContato());
+		Cliente clienteAtualizado = clienteRepository.save(clienteExistente);
+
+		return ClienteResponse.fromEntity(clienteAtualizado);
+	}
+
+	@Transactional
+	public ClienteResponse atualizarSomente(Long id, Map<String, Object> campos) {
+
+		Cliente clienteExistente = clienteRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Não foi possível atualizar Cliente com ID não encontrado!"));
+
+		// WARN: antes da validação do campo, estou fazendo manualmente o que
+		// ClienteRequest faz sozinho, porque não sei como passar ClienteRequest no Map
+		// ou outra forma de escolher os campos individualmente.
+
+		campos.forEach((campo, valor) -> {
+			try {
+				switch (campo) {
+					case "cnpj":
+						String cnpj = FormatoUtils.isolarNumeros(valor.toString());
+						validarCnpj(cnpj, id);
+						clienteExistente.setCnpj(cnpj);
+						break;
+
+					case "razaoSocial":
+						String razaoSocial = valor.toString().trim().toUpperCase();
+						validarRazaoSocial(razaoSocial, id);
+						clienteExistente.setRazaoSocial(razaoSocial);
+						break;
+
+					case "numeroContato":
+						String numeroContato = FormatoUtils.isolarNumeros(valor.toString());
+						validarNumeroContato(numeroContato, id);
+						clienteExistente.setNumeroContato(numeroContato);
+						break;
+
+					default:
+						throw new IllegalArgumentException("Não foi possível atualizar campo '" + campo + "'.");
+				}
+			} catch (Exception e) {
+				throw new IllegalArgumentException("Valor '" + valor + "' não permitido em campo '" + campo + "'.");
+			}
+		});
+
 		Cliente clienteAtualizado = clienteRepository.save(clienteExistente);
 
 		return ClienteResponse.fromEntity(clienteAtualizado);
