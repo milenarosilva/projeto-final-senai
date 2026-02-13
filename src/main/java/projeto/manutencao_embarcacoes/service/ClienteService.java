@@ -66,12 +66,11 @@ public class ClienteService {
 
 	public void excluir(Long id) {
 
-		if (!clienteRepository.existsById(id)) {
+		if (!clienteRepository.existsById(id))
 			throw new IllegalArgumentException("Não foi possível excluir Cliente com ID não encontrado!");
-		} else {
-			if (embarcacaoRepository.findAllByClienteId(id).size() != 0)
-				throw new IllegalArgumentException("Não é possível excluir Cliente com embarcações cadastradas!");
-		}
+
+		if (embarcacaoRepository.findAllByClienteId(id).size() != 0)
+			throw new IllegalArgumentException("Não é possível excluir Cliente com embarcações cadastradas!");
 
 		clienteRepository.deleteById(id);
 	}
