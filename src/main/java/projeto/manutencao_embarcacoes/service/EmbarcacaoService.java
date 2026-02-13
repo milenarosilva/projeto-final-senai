@@ -28,39 +28,32 @@ public class EmbarcacaoService {
 	@Transactional
 	public EmbarcacaoResponse salvar(EmbarcacaoRequest embarcacaoRequest) {
 
-		// Validação
-		String nome = embarcacaoRequest.nome().trim().toUpperCase();
-		String tipo = embarcacaoRequest.tipo().trim().toUpperCase();
-		String observacoes = embarcacaoRequest.observacoes().trim();
-		double comprimento = embarcacaoRequest.comprimento();
-		long proprietario = embarcacaoRequest.clienteId();
-
-		if (Stream.of(nome, tipo)
+		if (Stream.of(embarcacaoRequest.nome(), embarcacaoRequest.tipo())
 				.anyMatch(str -> str == null || str.isBlank()) ||
-				Stream.of(comprimento, proprietario)
+				Stream.of(embarcacaoRequest.comprimento(), embarcacaoRequest.proprietarioId())
 						.anyMatch(num -> num == null))
 			throw new IllegalArgumentException("Campos obrigatórios precisam ser preenchidos!");
 
-		FormatoUtils.validarTamanho(comprimento);
+		FormatoUtils.validarTamanho(embarcacaoRequest.comprimento());
 
-		if (comprimento < 2)// Não trabalhamos com botes kkk
+		if (embarcacaoRequest.comprimento() < 2)// Não trabalhamos com botes kkk
 			throw new IllegalArgumentException("Embarcação muito pequena para ser cadastrada.");
 
-		if (!clienteRepository.existsById(proprietario))
+		if (!clienteRepository.existsById(embarcacaoRequest.proprietarioId()))
 			throw new IllegalArgumentException("Não existe Cliente com o ID informado!");
 
 		// *Cliente* não pode ter duas embarcações com o mesmo nome
-		if (embarcacaoRepository.existsByNomeIgnoreCase(nome)) {
-			if (embarcacaoRepository.findAllByClienteId(proprietario).size() != 0)
+		if (embarcacaoRepository.existsByNomeIgnoreCase(embarcacaoRequest.nome())) {
+			if (embarcacaoRepository.findAllByClienteId(embarcacaoRequest.proprietarioId()).size() != 0)
 				throw new EntityExistsException("Cliente já possui embarcação cadastrada com esse Nome!");
 		}
 
 		Embarcacao embarcacao = new Embarcacao();
-		embarcacao.setNome(nome);
-		embarcacao.setTipo(tipo);
-		embarcacao.setObservacoes(observacoes);
-		embarcacao.setComprimento(comprimento);
-		embarcacao.setCliente(clienteRepository.findById(proprietario).get());
+		embarcacao.setNome(embarcacaoRequest.nome());
+		embarcacao.setTipo(embarcacaoRequest.tipo());
+		embarcacao.setObservacoes(embarcacaoRequest.observacoes());
+		embarcacao.setComprimento(embarcacaoRequest.comprimento());
+		embarcacao.setCliente(clienteRepository.findById(embarcacaoRequest.proprietarioId()).get());
 		Embarcacao embarcacaoSalva = embarcacaoRepository.save(embarcacao);
 
 		return EmbarcacaoResponse.fromEntity(embarcacaoSalva);

@@ -5,6 +5,18 @@ public record EmbarcacaoRequest(
 		double comprimento,
 		String tipo,
 		String observacoes,
-		Long clienteId) {
+		Long proprietarioId) {
+
+	public String nome() {
+		return nome.trim().toUpperCase();
+	}
+
+	public String tipo() {
+		return tipo.trim().toUpperCase();
+	}
+
+	public String observacoes() {
+		return observacoes.trim();
+	}
 
 }

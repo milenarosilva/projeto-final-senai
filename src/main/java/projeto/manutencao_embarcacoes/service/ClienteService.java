@@ -28,31 +28,26 @@ public class ClienteService {
 	@Transactional
 	public ClienteResponse salvar(ClienteRequest clienteRequest) {
 
-		// Validação
-		String cnpj = FormatoUtils.isolarNumeros(clienteRequest.cnpj());
-		String razaoSocial = clienteRequest.razaoSocial().trim().toUpperCase();
-		String numeroContato = FormatoUtils.isolarNumeros(clienteRequest.numeroContato());
-
-		if (Stream.of(cnpj, razaoSocial, numeroContato)
+		if (Stream.of(clienteRequest.cnpj(), clienteRequest.razaoSocial(), clienteRequest.numeroContato())
 				.anyMatch(str -> str == null || str.isBlank()))
 			throw new IllegalArgumentException("Campos obrigatórios precisam ser preenchidos!");
 
-		FormatoUtils.validarDocumentoCnpj(cnpj);
-		FormatoUtils.validarNumeroContato(numeroContato);
+		FormatoUtils.validarDocumentoCnpj(clienteRequest.cnpj());
+		FormatoUtils.validarNumeroContato(clienteRequest.numeroContato());
 
-		if (clienteRepository.existsByCnpj(cnpj))
+		if (clienteRepository.existsByCnpj(clienteRequest.cnpj()))
 			throw new EntityExistsException("Já existe um cliente cadastrado com esse CNPJ!");
 
-		if (clienteRepository.existsByNumeroContato(numeroContato))
+		if (clienteRepository.existsByNumeroContato(clienteRequest.numeroContato()))
 			throw new EntityExistsException("Já existe um cliente cadastrado com esse Número de Contato!");
 
-		if (clienteRepository.existsByRazaoSocialIgnoreCase(razaoSocial))
+		if (clienteRepository.existsByRazaoSocialIgnoreCase(clienteRequest.razaoSocial()))
 			throw new EntityExistsException("Já existe um cliente cadastrado com essa Razão Social!");
 
 		Cliente cliente = new Cliente();
-		cliente.setCnpj(cnpj);
-		cliente.setNumeroContato(numeroContato);
-		cliente.setRazaoSocial(razaoSocial);
+		cliente.setCnpj(clienteRequest.cnpj());
+		cliente.setNumeroContato(clienteRequest.numeroContato());
+		cliente.setRazaoSocial(clienteRequest.razaoSocial());
 		Cliente clienteSalvo = clienteRepository.save(cliente);
 
 		return ClienteResponse.fromEntity(clienteSalvo);
