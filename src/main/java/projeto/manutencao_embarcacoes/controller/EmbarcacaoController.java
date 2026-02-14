@@ -37,6 +37,12 @@ public class EmbarcacaoController {
 		return ResponseEntity.ok(embarcacaoResponse);
 	}
 
+	@GetMapping("/{id}")
+	public ResponseEntity<EmbarcacaoResponse> buscarPorId(@PathVariable Long id) {
+		EmbarcacaoResponse embarcacaoResponse = embarcacaoService.buscarPorId(id);
+		return ResponseEntity.ok(embarcacaoResponse);
+	}
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> excluir(@PathVariable Long id) {
 		embarcacaoService.excluir(id);

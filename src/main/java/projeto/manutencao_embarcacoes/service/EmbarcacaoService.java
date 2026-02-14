@@ -48,6 +48,14 @@ public class EmbarcacaoService {
 				.map(EmbarcacaoResponse::fromEntity).toList();
 	}
 
+	public EmbarcacaoResponse buscarPorId(Long id) {
+
+		Embarcacao embarcacao = embarcacaoRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Cliente com id #" + id + " não foi encontrado."));
+
+		return EmbarcacaoResponse.fromEntity(embarcacao);
+	}
+
 	public void excluir(Long id) {
 		if (!embarcacaoRepository.existsById(id))
 			throw new RuntimeException("Não foi possível excluir Embarcação com ID não encontrado");
