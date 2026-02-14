@@ -27,9 +27,9 @@ public class EmbarcacaoService {
 	@Transactional
 	public EmbarcacaoResponse salvar(EmbarcacaoRequest embarcacaoRequest) {
 
-		validarNome(embarcacaoRequest.nome(), null);
-		validarTamanho(embarcacaoRequest.comprimento(), null);
 		validarProprietario(embarcacaoRequest.proprietarioId(), null);
+		validarNome(embarcacaoRequest.nome(), embarcacaoRequest.proprietarioId(), null);
+		validarTamanho(embarcacaoRequest.comprimento(), null);
 		validarTipo(embarcacaoRequest.tipo(), null);
 
 		Embarcacao embarcacao = new Embarcacao();
