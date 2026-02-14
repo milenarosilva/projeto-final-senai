@@ -1,7 +1,6 @@
 package projeto.manutencao_embarcacoes.service;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -28,25 +27,10 @@ public class EmbarcacaoService {
 	@Transactional
 	public EmbarcacaoResponse salvar(EmbarcacaoRequest embarcacaoRequest) {
 
-		if (Stream.of(embarcacaoRequest.nome(), embarcacaoRequest.tipo())
-				.anyMatch(str -> str == null || str.isBlank()) ||
-				Stream.of(embarcacaoRequest.comprimento(), embarcacaoRequest.proprietarioId())
-						.anyMatch(num -> num == null))
-			throw new IllegalArgumentException("Campos obrigatórios precisam ser preenchidos!");
-
-		FormatoUtils.validarTamanho(embarcacaoRequest.comprimento());
-
-		if (embarcacaoRequest.comprimento() < 2)// Não trabalhamos com botes kkk
-			throw new IllegalArgumentException("Embarcação muito pequena para ser cadastrada.");
-
-		if (!clienteRepository.existsById(embarcacaoRequest.proprietarioId()))
-			throw new IllegalArgumentException("Não existe Cliente com o ID informado!");
-
-		// *Cliente* não pode ter duas embarcações com o mesmo nome
-		if (embarcacaoRepository.existsByNomeIgnoreCase(embarcacaoRequest.nome())) {
-			if (embarcacaoRepository.findAllByClienteId(embarcacaoRequest.proprietarioId()).size() != 0)
-				throw new EntityExistsException("Cliente já possui embarcação cadastrada com esse Nome!");
-		}
+		validarNome(embarcacaoRequest.nome(), null);
+		validarTamanho(embarcacaoRequest.comprimento(), null);
+		validarProprietario(embarcacaoRequest.proprietarioId(), null);
+		validarTipo(embarcacaoRequest.tipo(), null);
 
 		Embarcacao embarcacao = new Embarcacao();
 		embarcacao.setNome(embarcacaoRequest.nome());
@@ -69,6 +53,43 @@ public class EmbarcacaoService {
 			throw new RuntimeException("Não foi possível excluir Embarcação com ID não encontrado");
 
 		embarcacaoRepository.deleteById(id);
+	}
+
+	private void validarNome(String nome, Long idIgnorar) {
+
+		if (nome == null || nome.isBlank())
+			throw new IllegalArgumentException("Nome da embarcação é obrigatório e precisa ser preenchido!");
+
+		// *Cliente* não pode ter duas embarcações com o mesmo nome
+		if (embarcacaoRepository.existsByNomeIgnoreCase(nome))
+			if (embarcacaoRepository.findAllByClienteNomeIgnoreCase(nome).size() != 0)
+				throw new EntityExistsException("Cliente já possui embarcação cadastrada com esse Nome!");
+	}
+
+	private void validarTamanho(double tamanho, Long idIgnorar) {
+
+		FormatoUtils.validarTamanho(tamanho);
+
+		if (tamanho <= 0)
+			throw new IllegalArgumentException("Tamanho da embarcação é obrigatório e precisa ser preenchido!");
+
+		if (tamanho < 2)// Não trabalhamos com botes kkk
+			throw new IllegalArgumentException("Embarcação muito pequena para ser	cadastrada.");
+	}
+
+	private void validarProprietario(Long proprietarioId, Long idIgnorar) {
+
+		if (proprietarioId == null)
+			throw new IllegalArgumentException("Proprietário é obrigatório e precisa ser preenchido!");
+
+		if (!clienteRepository.existsById(proprietarioId))
+			throw new IllegalArgumentException("Não existe Cliente com o ID informado!");
+	}
+
+	private void validarTipo(String tipo, Long idIgnorar) {
+
+		if (tipo == null || tipo.isBlank())
+			throw new IllegalArgumentException("Tipo é obrigatório e precisa ser preenchido!");
 	}
 
 }
