@@ -10,6 +10,10 @@ public interface EmbarcacaoRepository extends JpaRepository<Embarcacao, Long> {
 
 	boolean existsByNomeIgnoreCase(String nome);
 
+	boolean existsByNomeIgnoreCaseAndClienteId(String nome, Long id);
+
+	Embarcacao findByNomeIgnoreCaseAndClienteId(String nome, Long id);
+
 	List<Embarcacao> findAllByClienteId(Long id);
 
 	List<Embarcacao> findByNomeContainingIgnoreCase(String nome);
