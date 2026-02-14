@@ -28,7 +28,7 @@ public class EmbarcacaoService {
 	public EmbarcacaoResponse salvar(EmbarcacaoRequest embarcacaoRequest) {
 
 		validarProprietario(embarcacaoRequest.proprietarioId(), null);
-		validarNome(embarcacaoRequest.nome(), embarcacaoRequest.proprietarioId(), null);
+		validarNome(embarcacaoRequest.nome(), null);
 		validarTamanho(embarcacaoRequest.comprimento(), null);
 		validarTipo(embarcacaoRequest.tipo(), null);
 
@@ -63,7 +63,7 @@ public class EmbarcacaoService {
 						() -> new IllegalArgumentException("Não foi possível atualizar Embarcação com ID não encontrado!"));
 
 		validarProprietario(embarcacaoRequest.proprietarioId(), id);
-		validarNome(embarcacaoRequest.nome(), embarcacaoRequest.proprietarioId(), id);
+		validarNome(embarcacaoRequest.nome(), id);
 		validarTipo(embarcacaoRequest.tipo(), id);
 		validarTamanho(embarcacaoRequest.comprimento(), id);
 
@@ -84,14 +84,17 @@ public class EmbarcacaoService {
 		embarcacaoRepository.deleteById(id);
 	}
 
-	private void validarNome(String nome, Long proprietarioID, Long idIgnorar) {
+	private void validarNome(String nome, Long idIgnorar) {
 
 		if (nome == null || nome.isBlank())
 			throw new IllegalArgumentException("Nome da embarcação é obrigatório e precisa ser preenchido!");
 
 		// *Cliente* não pode ter duas embarcações com o mesmo nome
-		if (embarcacaoRepository.existsByNomeIgnoreCaseAndClienteId(nome, proprietarioID))
-			if (embarcacaoRepository.findByNomeIgnoreCaseAndClienteId(nome, proprietarioID).getId() != idIgnorar)
+
+		Long proprietarioId = embarcacaoRepository.findByNomeIgnoreCase(nome).getCliente().getId();
+
+		if (embarcacaoRepository.existsByNomeIgnoreCaseAndClienteId(nome, proprietarioId))
+			if (embarcacaoRepository.findByNomeIgnoreCaseAndClienteId(nome, proprietarioId).getId() != idIgnorar)
 				throw new EntityExistsException("Cliente já possui embarcação cadastrada com esse Nome!");
 	}
 
