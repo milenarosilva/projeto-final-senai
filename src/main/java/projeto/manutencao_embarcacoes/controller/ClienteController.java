@@ -42,6 +42,12 @@ public class ClienteController {
 		return ResponseEntity.ok(clienteResponse);
 	}
 
+	@GetMapping("/{id}")
+	public ResponseEntity<ClienteResponse> buscarPorId(@PathVariable Long id) {
+		ClienteResponse clienteResponse = clienteService.buscarPorId(id);
+		return ResponseEntity.ok(clienteResponse);
+	}
+
 	@PutMapping("/{id}")
 	public ResponseEntity<ClienteResponse> atualizar(@PathVariable Long id, @RequestBody ClienteRequest clienteRequest) {
 		ClienteResponse clienteResponse = clienteService.atualizar(id, clienteRequest);

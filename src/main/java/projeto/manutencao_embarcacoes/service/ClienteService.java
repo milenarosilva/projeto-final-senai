@@ -46,6 +46,13 @@ public class ClienteService {
 				.map(ClienteResponse::fromEntity).toList();
 	}
 
+	public ClienteResponse buscarPorId(Long id) {
+		Cliente cliente = clienteRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Cliente com id #" + id + " não foi encontrado."));
+
+		return ClienteResponse.fromEntity(cliente);
+	}
+
 	@Transactional
 	public ClienteResponse atualizar(Long id, ClienteRequest clienteRequest) {
 
