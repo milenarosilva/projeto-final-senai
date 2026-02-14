@@ -55,14 +55,14 @@ public class EmbarcacaoService {
 		embarcacaoRepository.deleteById(id);
 	}
 
-	private void validarNome(String nome, Long idIgnorar) {
+	private void validarNome(String nome, Long proprietarioID, Long idIgnorar) {
 
 		if (nome == null || nome.isBlank())
 			throw new IllegalArgumentException("Nome da embarcação é obrigatório e precisa ser preenchido!");
 
 		// *Cliente* não pode ter duas embarcações com o mesmo nome
 		if (embarcacaoRepository.existsByNomeIgnoreCase(nome))
-			if (embarcacaoRepository.findAllByClienteNomeIgnoreCase(nome).size() != 0)
+			if (embarcacaoRepository.findAllByClienteId(proprietarioID).size() != 0)
 				throw new EntityExistsException("Cliente já possui embarcação cadastrada com esse Nome!");
 	}
 

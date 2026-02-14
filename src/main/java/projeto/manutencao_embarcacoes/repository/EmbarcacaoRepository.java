@@ -12,8 +12,6 @@ public interface EmbarcacaoRepository extends JpaRepository<Embarcacao, Long> {
 
 	List<Embarcacao> findAllByClienteId(Long id);
 
-	List<Embarcacao> findAllByClienteNomeIgnoreCase(String nome);
-
 	List<Embarcacao> findByNomeContainingIgnoreCase(String nome);
 
 }
