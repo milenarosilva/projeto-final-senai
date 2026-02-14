@@ -51,7 +51,7 @@ public class EmbarcacaoService {
 	public EmbarcacaoResponse buscarPorId(Long id) {
 
 		Embarcacao embarcacao = embarcacaoRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Cliente com id #" + id + " não foi encontrado."));
+				.orElseThrow(() -> new IllegalArgumentException("Embarcação com id #" + id + " não foi encontrado."));
 
 		return EmbarcacaoResponse.fromEntity(embarcacao);
 	}
