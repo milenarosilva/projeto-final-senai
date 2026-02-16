@@ -1,6 +1,7 @@
 package projeto.manutencao_embarcacoes.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class EmbarcacaoService {
 	public EmbarcacaoResponse salvar(EmbarcacaoRequest embarcacaoRequest) {
 
 		validarProprietario(embarcacaoRequest.proprietarioId(), null);
-		validarNome(embarcacaoRequest.nome(), null);
+		validarNome(embarcacaoRequest.nome(), embarcacaoRequest.proprietarioId(), null);
 		validarTamanho(embarcacaoRequest.comprimento(), null);
 		validarTipo(embarcacaoRequest.tipo(), null);
 
@@ -56,6 +57,7 @@ public class EmbarcacaoService {
 		return EmbarcacaoResponse.fromEntity(embarcacao);
 	}
 
+	@Transactional
 	public EmbarcacaoResponse atualizar(Long id, EmbarcacaoRequest embarcacaoRequest) {
 
 		Embarcacao embarcacaoExistente = embarcacaoRepository.findById(id)
@@ -63,7 +65,7 @@ public class EmbarcacaoService {
 						() -> new IllegalArgumentException("Não foi possível atualizar Embarcação com ID não encontrado!"));
 
 		validarProprietario(embarcacaoRequest.proprietarioId(), id);
-		validarNome(embarcacaoRequest.nome(), id);
+		validarNome(embarcacaoRequest.nome(), embarcacaoRequest.proprietarioId(), id);
 		validarTipo(embarcacaoRequest.tipo(), id);
 		validarTamanho(embarcacaoRequest.comprimento(), id);
 
@@ -77,6 +79,61 @@ public class EmbarcacaoService {
 		return EmbarcacaoResponse.fromEntity(embarcacaoAtualizada);
 	}
 
+	@Transactional
+	public EmbarcacaoResponse atualizarSomente(Long id, Map<String, Object> campos) {
+
+		Embarcacao embarcacaoExistente = embarcacaoRepository.findById(id)
+				.orElseThrow(
+						() -> new IllegalArgumentException("Não foi possível atualizar Embarcação com ID não encontrado!"));
+
+		campos.forEach((campo, valor) -> {
+			try {
+				switch (campo) {
+					case "tipo":
+						String tipo = valor.toString().trim().toUpperCase();
+						validarTipo(tipo, id);
+						embarcacaoExistente.setTipo(tipo);
+						break;
+
+					case "observacoes":
+						String observacoes = valor.toString().trim();
+						embarcacaoExistente.setObservacoes(observacoes);
+						break;
+
+					case "comprimento":
+						// NOTE: a conversão parece complicada mas foi necessário para pegar o valor em
+						// double mesmo quando passado inteiro
+						double comprimento = Double.valueOf(valor.toString());
+						validarTamanho(comprimento, id);
+						embarcacaoExistente.setComprimento(comprimento);
+						break;
+
+					case "proprietarioId":
+						Long proprietarioId = (Long) valor;
+						validarProprietario(proprietarioId, id);
+						embarcacaoExistente.setCliente(clienteRepository.findById(proprietarioId).get());
+						break;
+
+					case "nome":
+						String nome = valor.toString().trim().toUpperCase();
+						Long clienteId = embarcacaoExistente.getCliente().getId();
+						validarNome(nome, clienteId, id);
+						embarcacaoExistente.setNome(nome);
+						break;
+
+					default:
+						throw new IllegalArgumentException("Não foi possível atualizar campo '" + campo + "'.");
+				}
+			} catch (Exception e) {
+				throw new IllegalArgumentException(e);
+			}
+		});
+
+		Embarcacao embarcacaoAtualizada = embarcacaoRepository.save(embarcacaoExistente);
+
+		return EmbarcacaoResponse.fromEntity(embarcacaoAtualizada);
+	}
+
 	public void excluir(Long id) {
 		if (!embarcacaoRepository.existsById(id))
 			throw new RuntimeException("Não foi possível excluir Embarcação com ID não encontrado");
@@ -84,18 +141,15 @@ public class EmbarcacaoService {
 		embarcacaoRepository.deleteById(id);
 	}
 
-	private void validarNome(String nome, Long idIgnorar) {
+	private void validarNome(String nome, Long clienteId, Long idIgnorar) {
 
 		if (nome == null || nome.isBlank())
 			throw new IllegalArgumentException("Nome da embarcação é obrigatório e precisa ser preenchido!");
 
 		// *Cliente* não pode ter duas embarcações com o mesmo nome
-
-		Long proprietarioId = embarcacaoRepository.findByNomeIgnoreCase(nome).getCliente().getId();
-
-		if (embarcacaoRepository.existsByNomeIgnoreCaseAndClienteId(nome, proprietarioId))
-			if (embarcacaoRepository.findByNomeIgnoreCaseAndClienteId(nome, proprietarioId).getId() != idIgnorar)
-				throw new EntityExistsException("Cliente já possui embarcação cadastrada com esse Nome!");
+		if (embarcacaoRepository.existsByNomeIgnoreCaseAndClienteId(nome, clienteId) &&
+				embarcacaoRepository.findByNomeIgnoreCaseAndClienteId(nome, clienteId).getId() != idIgnorar)
+			throw new EntityExistsException("Cliente já possui embarcação cadastrada com esse nome!");
 	}
 
 	private void validarTamanho(double tamanho, Long idIgnorar) {

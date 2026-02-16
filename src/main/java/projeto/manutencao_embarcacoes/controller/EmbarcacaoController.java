@@ -1,11 +1,13 @@
 package projeto.manutencao_embarcacoes.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -48,6 +50,13 @@ public class EmbarcacaoController {
 	public ResponseEntity<EmbarcacaoResponse> atualizar(@PathVariable Long id,
 			@RequestBody EmbarcacaoRequest embarcacaoRequest) {
 		EmbarcacaoResponse embarcacaoResponse = embarcacaoService.atualizar(id, embarcacaoRequest);
+		return ResponseEntity.ok(embarcacaoResponse);
+	}
+
+	@PatchMapping("/{id}")
+	public ResponseEntity<EmbarcacaoResponse> atualizarSomente(@PathVariable Long id,
+			@RequestBody Map<String, Object> campos) {
+		EmbarcacaoResponse embarcacaoResponse = embarcacaoService.atualizarSomente(id, campos);
 		return ResponseEntity.ok(embarcacaoResponse);
 	}
 
