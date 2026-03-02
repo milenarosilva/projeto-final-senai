@@ -9,6 +9,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import projeto.manutencao_embarcacoes.dto.request.EmbarcacaoRequest;
 import projeto.manutencao_embarcacoes.dto.response.EmbarcacaoResponse;
+import projeto.manutencao_embarcacoes.exception.CamposObrigatoriosNaoPreenchidosException;
 import projeto.manutencao_embarcacoes.model.Embarcacao;
 import projeto.manutencao_embarcacoes.repository.ClienteRepository;
 import projeto.manutencao_embarcacoes.repository.EmbarcacaoRepository;
@@ -144,7 +145,7 @@ public class EmbarcacaoService {
 	private void validarNome(String nome, Long clienteId, Long idIgnorar) {
 
 		if (nome == null || nome.isBlank())
-			throw new IllegalArgumentException("Nome da embarcação é obrigatório e precisa ser preenchido!");
+			throw new CamposObrigatoriosNaoPreenchidosException("nome");
 
 		// *Cliente* não pode ter duas embarcações com o mesmo nome
 		if (embarcacaoRepository.existsByNomeIgnoreCaseAndClienteId(nome, clienteId) &&
@@ -157,16 +158,16 @@ public class EmbarcacaoService {
 		FormatoUtils.validarTamanho(tamanho);
 
 		if (tamanho <= 0)
-			throw new IllegalArgumentException("Tamanho da embarcação é obrigatório e precisa ser preenchido!");
+			throw new CamposObrigatoriosNaoPreenchidosException("comprimento");
 
 		if (tamanho < 2)// Não trabalhamos com botes kkk
-			throw new IllegalArgumentException("Embarcação muito pequena para ser	cadastrada.");
+			throw new IllegalArgumentException("Embarcação muito pequena para ser cadastrada!");
 	}
 
 	private void validarProprietario(Long proprietarioId, Long idIgnorar) {
 
 		if (proprietarioId == null)
-			throw new IllegalArgumentException("Proprietário é obrigatório e precisa ser preenchido!");
+			throw new CamposObrigatoriosNaoPreenchidosException("proprietarioId");
 
 		if (!clienteRepository.existsById(proprietarioId))
 			throw new IllegalArgumentException("Não existe Cliente com o ID informado!");
@@ -175,7 +176,7 @@ public class EmbarcacaoService {
 	private void validarTipo(String tipo, Long idIgnorar) {
 
 		if (tipo == null || tipo.isBlank())
-			throw new IllegalArgumentException("Tipo é obrigatório e precisa ser preenchido!");
+			throw new CamposObrigatoriosNaoPreenchidosException("tipo");
 	}
 
 }
